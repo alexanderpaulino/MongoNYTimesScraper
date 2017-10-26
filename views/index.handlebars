@@ -1,0 +1,47 @@
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid" id="nytHeader">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/" style="color:white">NY Times Scraper</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="/" style="background-color: #333; color:white">Home</a></li>
+      <li><a href="/saved" style="color:white">Saved Articles</a></li>
+      <li><a class="btn btn-danger scrape-new">SCRAPE NEW ARTICLES</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="jumbotron text-center">
+  <div class="overlay">
+  </div>
+  <div class="background-image">
+  </div>
+  <div class="caption">
+    <h1>The New York Times</h1><h1> Article Scraper</h1>
+    <p>Powered by MongoDB</p>
+  </div>
+</div>
+<div class="container-fluid article-container" id="articles">
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>New York Times Article Scraper - Powered by MongoDB</p>
+  </div>
+</footer>
+
+<div class="bootbox modal fade bootbox-alert in" tabindex="-1" role="dialog" id="scrapeModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="margin-top: -10px;">×</button>
+        <div class="bootbox-body">
+          <h3 class="text-center m-top-80" id="scrapeResult"></h3>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button data-bb-handler="ok" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="js/index.js"></script>

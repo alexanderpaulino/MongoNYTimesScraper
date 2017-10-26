@@ -1,0 +1,52 @@
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid" id="nytHeader">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/saved" style="color:white">Saved Articles</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/" style="color:white">Home</a></li>
+      <li class="active"><a href="/saved" style="background-color: #333; color:white">Saved Articles</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="jumbotron text-center">
+  <div class="overlay">
+  </div>
+  <div class="background-image">
+  </div>
+  <div class="caption">
+    <h1>Saved Articles</h1>
+    <p>Your Saved Articles</p>
+  </div>
+</div>
+<div class="container-fluid article-container">
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>New York Times Article Scraper - Powered by Mongo</p>
+  </div>
+</footer>
+
+<div class="bootbox modal fade in" tabindex="-1" role="dialog" style="display: block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" style="margin-top: -10px;">×</button>
+        <div class="bootbox-body">
+          <div class="container-fluid text-center">
+            <h4 id="notesHeading"></h4>
+            <hr>
+            <ul class="list-group note-container">
+              <li class="list-group-item" id="notesResult"></li>
+            </ul>
+            <textarea placeholder="New Note" rows="4" cols="60"></textarea>
+            <button class="btn btn-success save">Save Note</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/saved.js"></script>
