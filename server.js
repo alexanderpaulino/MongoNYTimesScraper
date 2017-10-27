@@ -40,6 +40,6 @@ require("./routes/html-routes.js")(app);
 require("./routes/api-routes.js")(app);
 
 // Start the server
-app.listen(PORT, function() {
-  console.log("App running on port " + PORT + "!");
+app.listen(process.env.PORT || 3000, function(){
+  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
