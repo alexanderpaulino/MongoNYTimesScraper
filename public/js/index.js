@@ -40,7 +40,7 @@ $(document).ready(function() {
 	  });
 	});
 
-	//Once the modal is closed, the page will refresh; revealing any new articles if they were added to the database.
+  //Once the modal is closed, the page will refresh; revealing any new articles if they were added to the database.
   $('#scrapeModal').on('hidden.bs.modal', function () {
   location.reload();
   });
