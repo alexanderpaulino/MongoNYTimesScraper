@@ -1,73 +1,72 @@
 $(document).ready(function() {  
 
+  var thisID
+
 //Upon accessing the Saved Articles page, a request for all articles that have been saved will be sent to the database.
 //The saved articles will then be prepended to the article feed.
-  $.getJSON("/articles?saved=true", function(data) {
+  $.getJSON("/articles/saved=true", function(data) {
     for (var i = 0; i < data.length; i++) {
-      $("#articles").prepend("<div class='panel panel-default'><div class='panel-heading'><a class='article-link' href="+data[i].link+"><h3>"+data[i].title+"</h3></a><a class='btn btn-danger delete'>Delete From Saved</a><a class='btn btn-success notes'>Article Notes</a></div><div class='panel-body'><p>"+ data[i].summary+"</p></div></div>");
+      $("#savedArticles").prepend("<div class='panel panel-default'><div class='panel-heading'><a class='article-link' href="
+        +data[i].link+"><h3>"+data[i].title+"</h3></a><a class='btn btn-danger delete' data-id="
+        +data[i]._id+">Delete From Saved</a><a class='btn btn-success notes' data-id="
+        +data[i]._id+">Article Notes</a></div><div class='panel-body'><p>"
+        + data[i].summary+"</p></div></div>");
     }
   });
 
-  // Whenever someone clicks a p tag
-  $(document).on("click", "p", function() {
-    // Empty the notes from the note section
-    $("#notes").empty();
-    // Save the id from the p tag
-    var thisId = $(this).attr("data-id");
+  $(document).on("click", ".delete", function() {
+    var thisId = this.dataset.id;
+      $.ajax({
+      method: "POST",
+      url: "/articles/deleted/" + thisId,
+      data: {
+        saved: false
+      }
+    }).done(function(data) {
+       location.reload();
+     });
+  });
 
-    // Now make an ajax call for the Article
-    $.ajax({
-      method: "GET",
-      url: "/articles/" + thisId
-    })
-      // With that done, add the note information to the page
-      .done(function(data) {
-        console.log(data);
-        // The title of the article
-        $("#notes").append("<h2>" + data.title + "</h2>");
-        // An input to enter a new title
-        $("#notes").append("<input id='titleinput' name='title' >");
-        // A textarea to add a new note body
-        $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-        // A button to submit a new note, with the id of the article saved to it
-        $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
-        // If there's a note in the article
-        if (data.note) {
-          // Place the title of the note in the title input
-          $("#titleinput").val(data.note.title);
-          // Place the body of the note in the body textarea
-          $("#bodyinput").val(data.note.body);
-        }
-      });
+  $(document).on("click", ".notes", function() {
+    thisId = this.dataset.id
+    $("#notesHeading").text("Notes for Article: "+thisId)
+    $.getJSON("/articles/notes/"+thisId, function(data) {
+      console.log(data)
+      if (data.note[0] !== undefined){
+      $("#notesResult").append("<li class='list-group-item note'>"
+        +data.note[0]+"<button class='btn btn-danger note-delete'>x</button></li>")
+      } else {
+      $("#notesResult").append("<li class='list-group-item note'>Notes have yet to be posted to this article.</li>")
+      }
+    });
+    $("#notesModal").modal("toggle");
   });
 
   // When you click the savenote button
-  $(document).on("click", "#savenote", function() {
-    // Grab the id associated with the article from the submit button
-    var thisId = $(this).attr("data-id");
-
+  $(document).on("click", ".save", function() {
     // Run a POST request to change the note, using what's entered in the inputs
+    if ($("#bodyinput").val() !== ""){
     $.ajax({
       method: "POST",
       url: "/articles/" + thisId,
       data: {
-        // Value taken from title input
-        title: $("#titleinput").val(),
-        // Value taken from note textarea
         body: $("#bodyinput").val()
       }
     })
       // With that done
       .done(function(data) {
-        // Log the response
+        // Log the response, empty the modal, and toggle it away.
         console.log(data);
-        // Empty the notes section
-        $("#notes").empty();
+        $("#notesModal").modal("toggle");
       });
-
-    // Also, remove the values entered in the input and textarea for note entry
-    $("#titleinput").val("");
-    $("#bodyinput").val("");
+    } else {
+      return false;
+    }
   });
+
+  $('#notesModal').on('hidden.bs.modal', function () {
+  $("#bodyinput").val("");
+  $("#notesResult").empty();
+  });
+
 });

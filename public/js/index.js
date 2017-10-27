@@ -5,9 +5,12 @@ $(document).ready(function() {
 
 	//Upon accessing the page, a scrape of the NY Times homepage will be performed and the article feed will be updated
 	$.get("/scrape").then(function() {
-		$.getJSON("/articles?saved=false", function(data) {
+		$.getJSON("/articles/saved=false", function(data) {
 		    for (var i = 0; i < data.length; i++) {
-		      $("#articles").prepend("<div class='panel panel-default'><div class='panel-heading'><a class='article-link' href="+data[i].link+"><h3>"+data[i].title+"</h3></a><a class='btn btn-primary save' data-id="+data[i]._id+">Save Article</a></div><div class='panel-body'><p>"+ data[i].summary+"</p></div></div>");
+		      $("#articles").prepend("<div class='panel panel-default'><div class='panel-heading'><a class='article-link' href="
+		      	+data[i].link+"><h3>"+data[i].title+"</h3></a><a class='btn btn-primary save' data-id="
+		      	+data[i]._id+">Save Article</a></div><div class='panel-body'><p>"
+		      	+ data[i].summary+"</p></div></div>");
 		    }
 		    articleCount = data.length;
 		  });
@@ -18,7 +21,7 @@ $(document).ready(function() {
 	$(document).on("click", ".scrape-new", function() {
 		$.get("/scrape").then(function() {
 
-			$.get("/articles?saved=false", function(data){
+			$.get("/articles/saved=false", function(data){
 
 				newArticles = (data.length-articleCount);
 				
@@ -38,20 +41,21 @@ $(document).ready(function() {
 	});
 
 	//Once the modal is closed, the page will refresh; revealing any new articles if they were added to the database.
-	$('#scrapeModal').on('hidden.bs.modal', function () {
+  $('#scrapeModal').on('hidden.bs.modal', function () {
   location.reload();
   });
 
 	$(document).on("click", ".save", function() {
 		var thisId = this.dataset.id;
-			$.ajax({
+		$.ajax({
 	    method: "POST",
-	    url: "/articles/" + thisId,
+	    url: "/articles/saved/" + thisId,
 	    data: {
 	      saved: true
 	    }
 	  }).done(function(data) {
-	     console.log(data);
+	  	console.log(data);
+	    location.reload();
 	   });
 	});
 });

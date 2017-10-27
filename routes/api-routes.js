@@ -39,7 +39,7 @@ module.exports = function(app) {
             if (err) {
             return res.send();
             }
-            res.json("Scrape Complete");
+            res.json("Scrape Complete with errors");
           });
         });
     });
@@ -61,9 +61,9 @@ module.exports = function(app) {
   });
 
   // Route for getting all Articles from the db that have not been saved
-  app.get("/articles?saved=false", function(req, res) {
+  app.get("/articles/saved=false", function(req, res) {
     db.Article
-      .find({ saved: false })
+      .find({saved: {$ne: true}})
       .then(function(dbArticle) {
         res.json(dbArticle);
       })
@@ -73,9 +73,9 @@ module.exports = function(app) {
   });
 
   // Route for getting all Articles from the db that have been saved by users
-  app.get("/articles?saved=true", function(req, res) {
+  app.get("/articles/saved=true", function(req, res) {
     db.Article
-      .find({ saved: true })
+      .find({saved: true})
       .then(function(dbArticle) {
         res.json(dbArticle);
       })
@@ -85,12 +85,12 @@ module.exports = function(app) {
   });
 
   // Route for grabbing a specific Article by id, populate it with it's note
-  app.get("/articles/:id", function(req, res) {
+  app.get("/articles/notes/:id", function(req, res) {
     // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
     db.Article
       .findOne({ _id: req.params.id })
       // ..and populate all of the notes associated with it
-      .populate("note")
+      .populate("note.Note")
       .then(function(dbArticle) {
         // If we were able to successfully find an Article with the given id, send it back to the client
         res.json(dbArticle);
@@ -101,16 +101,17 @@ module.exports = function(app) {
       });
   });
 
-  // Route for saving/updating an Article's associated note
-  app.post("/notes/:id", function(req, res) {
+  // Route for saving an Article's associated note
+  app.post("/articles/:id", function(req, res) {
     // Create a new note and pass the req.body to the entry
     db.Note
       .create(req.body)
       .then(function(dbNote) {
-        // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
+        // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. 
+        // Update the Article to be associated with the new Note.
         // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
         // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-        return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: {note: dbNote._id } }, { upsert: true });
       })
       .then(function(dbArticle) {
         // If we were able to successfully update an Article, send it back to the client
@@ -122,11 +123,23 @@ module.exports = function(app) {
       });
   });
 
+    // Route for deleting an Article's associated note
+  app.post("/notes/delete/:id", function(req, res) {
+    // Create a new note and pass the req.body to the entry
+    db.Note.remove({ _id: req.params.id })
+      .then(function(dbArticle) {
+        // If we were able to successfully update an Article, notify the client
+        res.json("Article note deleted.");
+      })
+      .catch(function(err) {
+        // If an error occurred, send it to the client
+        res.json(err);
+      });
+  });
+
   // Route for saving articles.
-  app.post("/articles/:id", function(req, res) {
-    db.Article.create(req.body).then(function(dbArticle){
-      return db.Article.findOneAndUpdate({ _id: req.params.id }, { saved: true });
-    })
+  app.post("/articles/saved/:id", function(req, res) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { saved: true })
     .then(function(dbArticle) {
     // If we were able to successfully update an Article, send it back to the client
         res.json(dbArticle);
@@ -136,4 +149,17 @@ module.exports = function(app) {
         res.json(err);
       });
   });
-} // - End module exports+
+
+  // Route for unsaving articles.
+  app.post("/articles/deleted/:id", function(req, res) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { saved: false })
+    .then(function(dbArticle) {
+    // If we were able to successfully update an Article, send it back to the client
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+    // If an error occurred, send it to the client
+        res.json(err);
+      });
+  });
+} // - End module exports

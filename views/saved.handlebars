@@ -19,7 +19,7 @@
     <p>Your Saved Articles</p>
   </div>
 </div>
-<div class="container-fluid article-container">
+<div class="container-fluid article-container" id="savedArticles">
 </div>
 
 <footer class="footer">
@@ -28,7 +28,7 @@
   </div>
 </footer>
 
-<div class="bootbox modal fade in" tabindex="-1" role="dialog" style="display: block;">
+<div class="bootbox modal fade bootbox-alert in" tabindex="-1" role="dialog" id="notesModal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
@@ -37,11 +37,10 @@
           <div class="container-fluid text-center">
             <h4 id="notesHeading"></h4>
             <hr>
-            <ul class="list-group note-container">
-              <li class="list-group-item" id="notesResult"></li>
+            <ul class="list-group note-container" id="notesResult">
             </ul>
-            <textarea placeholder="New Note" rows="4" cols="60"></textarea>
-            <button class="btn btn-success save">Save Note</button>
+            <textarea placeholder="New Note" rows="4" cols="60" id="bodyinput" name="body"></textarea>
+            <button class="btn btn-success save" data-dismiss="modal">Save Note</button>
           </div>
         </div>
       </div>
