@@ -7,7 +7,7 @@ $(document).ready(function() {
 	$.get("/scrape").then(function() {
 		$.getJSON("/articles/saved=false", function(data) {
 		    for (var i = 0; i < data.length; i++) {
-		      $("#articles").prepend("<div class='panel panel-default'><div class='panel-heading'><a class='article-link' href="
+		      $("#articles").prepend("<div class='panel panel-default'><div class='panel-heading'><a target='_blank' class='article-link' href="
 		      	+data[i].link+"><h3>"+data[i].title+"</h3></a><a class='btn btn-primary save' data-id="
 		      	+data[i]._id+">Save Article</a></div><div class='panel-body'><p>"
 		      	+ data[i].summary+"</p></div></div>");

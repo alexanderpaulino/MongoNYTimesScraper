@@ -6,7 +6,7 @@ $(document).ready(function() {
 //The saved articles will then be prepended to the article feed.
   $.getJSON("/articles/saved=true", function(data) {
     for (var i = 0; i < data.length; i++) {
-      $("#savedArticles").prepend("<div class='panel panel-default'><div class='panel-heading'><a class='article-link' href="
+      $("#savedArticles").prepend("<div class='panel panel-default'><div class='panel-heading'><a target='_blank' class='article-link' href="
         +data[i].link+"><h3>"+data[i].title+"</h3></a><a class='btn btn-danger delete' data-id="
         +data[i]._id+">Delete From Saved</a><a class='btn btn-success notes' data-id="
         +data[i]._id+">Article Notes</a></div><div class='panel-body'><p>"
