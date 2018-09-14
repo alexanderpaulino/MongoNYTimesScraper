@@ -1,6 +1,6 @@
 $(document).ready(function() {  
 
-  var thisID
+  var thisID;
 
 //Upon accessing the Saved Articles page, a request for all articles that have been saved will be sent to the database.
 //The saved articles will then be prepended to the article feed.
@@ -65,7 +65,6 @@ $(document).ready(function() {
       }
     }) 
       .done(function(data) {  
-        console.log(data);
         $("#notesModal").modal("toggle");
       });
     } else {

@@ -10,25 +10,17 @@ module.exports = function(app) {
   
       var $ = cheerio.load(response.data);
 
-      $("article.story").each(function(i, element) {
+      $("article.css-180b3ld").each(function(i, element) {
         
         var result = {};
 
-        result.title = $(this)
-          .children("h2.story-heading")
-          .children("a")
-          .text();
-        result.link = $(this)
-          .children("h2.story-heading")
-          .children("a")
-          .attr("href");
-        result.summary = $(this)
-          .children("p.summary")
-          .text();
+        result.title = $(this).find("h2").text();
+        result.link = "http://www.nytimes.com"+$(this).find("a").attr("href");
+        result.summary = $(this).find("p").text();
 
-        db.Article
-          .create(result)
-          .then(function(dbArticle) {  
+        console.log(result);
+
+        db.Article.create(result).then(function(dbArticle) {  
           res.send("Scrape Complete");
           }).catch(function(err) {
             // **Take the code below, it prevents unhandled promise rejections from stacking up with every scrape.**
